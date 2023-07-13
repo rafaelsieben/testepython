@@ -1,24 +1,26 @@
-import json
+from flask import Flask, jsonify
 from faker import Faker
+import random
 
-def gerar_dados_pessoas():
-    fake = Faker('pt_BR')
+app = Flask(__name__)
+fake = Faker('pt_BR')
 
+@app.route('/api/pessoas/<int:num_pessoas>', methods=['GET'])
+def obter_pessoas(num_pessoas):
     pessoas = []
-    for _ in range(10):
+
+    for _ in range(num_pessoas):
+        nome = fake.name()
+        data_nascimento = fake.date_of_birth().strftime('%d/%m/%Y')
+        salario = round(random.uniform(1000, 10000), 2)
         pessoa = {
-            'nome': fake.name(),
-            'data_nascimento': fake.date_of_birth().strftime('%Y-%m-%d'),
-            'endereco': fake.address().replace('\n', ', ')
+            'nome': nome,
+            'data_nascimento': data_nascimento,
+            'salario': salario
         }
         pessoas.append(pessoa)
 
-    return pessoas
+    return jsonify(pessoas), 200
 
-dados_pessoas = gerar_dados_pessoas()
-
-# Salvar os dados em um arquivo JSON
-with open('dados_pessoas.json', 'w', encoding='utf-8') as arquivo_json:
-    json.dump(dados_pessoas, arquivo_json, ensure_ascii=False, indent=4)
-
-print("Arquivo JSON gerado com sucesso!")
+if __name__ == '__main__':
+    app.run()
