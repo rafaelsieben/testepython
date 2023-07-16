@@ -4,6 +4,7 @@ import random
 
 app = Flask(__name__)
 fake = Faker('pt_BR')
+fake.use_english = False
 
 dominios = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'live.com']
 
